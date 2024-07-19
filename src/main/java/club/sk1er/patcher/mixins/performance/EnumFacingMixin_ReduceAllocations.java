@@ -8,10 +8,7 @@ package club.sk1er.patcher.mixins.performance;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3i;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -27,15 +24,19 @@ public class EnumFacingMixin_ReduceAllocations {
     @Shadow
     @Final
     private int opposite;
-    private int frontOffsetX;
-    private int frontOffsetY;
-    private int frontOffsetZ;
+
+    @Unique
+    private int patcher$frontOffsetX;
+    @Unique
+    private int patcher$frontOffsetY;
+    @Unique
+    private int patcher$frontOffsetZ;
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void cacheOffsets(String string, int i, int indexIn, int oppositeIn, int horizontalIndexIn, String nameIn, EnumFacing.AxisDirection axisDirectionIn, EnumFacing.Axis axisIn, Vec3i directionVecIn, CallbackInfo ci) {
-        frontOffsetX = axisIn == EnumFacing.Axis.X ? axisDirectionIn.getOffset() : 0;
-        frontOffsetY = axisIn == EnumFacing.Axis.Y ? axisDirectionIn.getOffset() : 0;
-        frontOffsetZ = axisIn == EnumFacing.Axis.Z ? axisDirectionIn.getOffset() : 0;
+        patcher$frontOffsetX = axisIn == EnumFacing.Axis.X ? axisDirectionIn.getOffset() : 0;
+        patcher$frontOffsetY = axisIn == EnumFacing.Axis.Y ? axisDirectionIn.getOffset() : 0;
+        patcher$frontOffsetZ = axisIn == EnumFacing.Axis.Z ? axisDirectionIn.getOffset() : 0;
     }
 
     /**
@@ -44,7 +45,7 @@ public class EnumFacingMixin_ReduceAllocations {
      */
     @Overwrite
     public int getFrontOffsetX() {
-        return frontOffsetX;
+        return patcher$frontOffsetX;
     }
 
     /**
@@ -53,7 +54,7 @@ public class EnumFacingMixin_ReduceAllocations {
      */
     @Overwrite
     public int getFrontOffsetY() {
-        return frontOffsetY;
+        return patcher$frontOffsetY;
     }
 
     /**
@@ -62,7 +63,7 @@ public class EnumFacingMixin_ReduceAllocations {
      */
     @Overwrite
     public int getFrontOffsetZ() {
-        return frontOffsetZ;
+        return patcher$frontOffsetZ;
     }
 
     /**

@@ -245,6 +245,7 @@
     "performance.MinecraftMixin_ToggleGLErrorChecking",
     "performance.MinecraftServerMixin_MemoryLeak",
     "performance.ModelRendererMixin_BatchDrawing",
+    "performance.MutableBlockPosMixin_UpdateSuper",
     "performance.NBTTagStringMixin_DataCache",
     "performance.NetHandlerPlayClientMixin_InstantDimensionSwapping",
     "performance.NodeProcessorMixin_MemoryLeak",

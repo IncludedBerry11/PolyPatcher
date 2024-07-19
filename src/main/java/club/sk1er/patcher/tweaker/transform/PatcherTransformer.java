@@ -13,9 +13,9 @@ import org.objectweb.asm.tree.MethodNode;
 public interface PatcherTransformer {
 
     /**
-     * The class name that's being transformed
+     * The class names that are being transformed
      *
-     * @return the class name
+     * @return the class names
      */
     String[] getClassName();
 

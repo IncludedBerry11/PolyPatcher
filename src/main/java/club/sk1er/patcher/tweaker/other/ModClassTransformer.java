@@ -31,6 +31,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
+import java.util.Collections;
+
 /**
  * Used for editing other mods (OptiFine, LevelHead, TNT Timer, etc.) after they've loaded.
  */
@@ -95,7 +97,7 @@ public class ModClassTransformer implements IClassTransformer {
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
-        return ClassTransformer.createTransformer(transformedName, bytes, transformerMap, logger);
+        return ClassTransformer.createTransformer(transformedName, bytes, transformerMap, Collections.emptyList(), logger);
     }
 
     private void registerCommonTransformers() {

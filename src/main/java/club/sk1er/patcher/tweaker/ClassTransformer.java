@@ -1,8 +1,11 @@
 package club.sk1er.patcher.tweaker;
 
 //#if MC==10809
+
+import cc.polyfrost.oneconfig.libs.universal.UDesktop;
+import club.sk1er.patcher.asm.BlockPosDirectAccessTransformer;
+import club.sk1er.patcher.asm.GenericEnumDirectAccessTransformer;
 import club.sk1er.patcher.asm.external.forge.ForgeChunkManagerTransformer;
-//#endif
 import club.sk1er.patcher.asm.external.forge.ModelLoaderTransformer;
 import club.sk1er.patcher.asm.external.forge.loader.*;
 import club.sk1er.patcher.asm.external.forge.render.ForgeHooksClientTransformer;
@@ -31,14 +34,17 @@ import club.sk1er.patcher.asm.render.screen.InventoryEffectRendererTransformer;
 import club.sk1er.patcher.asm.render.world.RenderGlobalTransformer;
 import club.sk1er.patcher.asm.render.world.VertexFormatTransformer;
 import club.sk1er.patcher.asm.render.world.VisGraphTransformer;
-import club.sk1er.patcher.asm.render.world.entity.*;
+import club.sk1er.patcher.asm.render.world.entity.LayerCustomHeadTransformer;
+import club.sk1er.patcher.asm.render.world.entity.LayerHeldItemTransformer;
+import club.sk1er.patcher.asm.render.world.entity.RenderPlayerTransformer;
+import club.sk1er.patcher.asm.render.world.entity.RenderWitherTransformer;
 import club.sk1er.patcher.asm.world.entity.data.nbt.NBTTagCompoundTransformer;
 import club.sk1er.patcher.optifine.OptiFineGenerations;
+import club.sk1er.patcher.tweaker.transform.OmniTransformer;
 import club.sk1er.patcher.tweaker.transform.PatcherTransformer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
-import cc.polyfrost.oneconfig.libs.universal.UDesktop;
 import net.minecraft.launchwrapper.IClassTransformer;
 import net.minecraft.launchwrapper.Launch;
 import org.apache.commons.lang3.StringUtils;
@@ -51,21 +57,14 @@ import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.swing.*;
-import java.awt.Component;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.net.URI;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+import java.util.*;
 
 public class ClassTransformer implements IClassTransformer {
 
@@ -73,6 +72,7 @@ public class ClassTransformer implements IClassTransformer {
     public static String optifineVersion = "NONE";
     private final Logger logger = LogManager.getLogger("Patcher - Class Transformer");
     private final Multimap<String, PatcherTransformer> transformerMap = ArrayListMultimap.create();
+    private final List<PatcherTransformer> omniTransformers = new ArrayList<>();
 
     public static boolean smoothFontDetected;
     public static final Set<String> supportedOptiFineVersions = new HashSet<>();
@@ -157,13 +157,21 @@ public class ClassTransformer implements IClassTransformer {
         registerTransformer(new WindowsDisplayTransformer());
         registerTransformer(new WindowsKeycodesTransformer());
         registerTransformer(new KeyboardTransformer());
+
+        // Omni Transformers
+        registerOmniTransformer(new BlockPosDirectAccessTransformer());
+        registerOmniTransformer(new GenericEnumDirectAccessTransformer());
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static byte[] createTransformer(String transformedName, byte[] bytes, Multimap<String, PatcherTransformer> transformerMap, Logger logger) {
+    public static byte[] createTransformer(String transformedName, byte[] bytes, Multimap<String, PatcherTransformer> transformerMap, List<PatcherTransformer> omniTransformers, Logger logger) {
         if (bytes == null) return null;
 
         Collection<PatcherTransformer> transformers = transformerMap.get(transformedName);
+        if (!omniTransformers.isEmpty()) {
+            transformers = new ArrayList<>(transformers);
+            transformers.addAll(omniTransformers);
+        }
         if (transformers.isEmpty()) return bytes;
 
         ClassReader classReader = new ClassReader(bytes);
@@ -207,6 +215,10 @@ public class ClassTransformer implements IClassTransformer {
         return classWriter.toByteArray();
     }
 
+    private void registerOmniTransformer(OmniTransformer transformer) {
+        omniTransformers.add(transformer);
+    }
+
     private void registerTransformer(PatcherTransformer transformer) {
         for (String cls : transformer.getClassName()) {
             transformerMap.put(cls, transformer);
@@ -215,7 +227,7 @@ public class ClassTransformer implements IClassTransformer {
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
-        return createTransformer(transformedName, bytes, transformerMap, logger);
+        return createTransformer(transformedName, bytes, transformerMap, omniTransformers, logger);
     }
 
     private void haltForOptiFine(String message) {

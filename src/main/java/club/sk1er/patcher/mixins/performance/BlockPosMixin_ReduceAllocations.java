@@ -8,9 +8,8 @@ import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(BlockPos.class)
 public abstract class BlockPosMixin_ReduceAllocations extends Vec3i {
-
-    public BlockPosMixin_ReduceAllocations(int xIn, int yIn, int zIn) {
-        super(xIn, yIn, zIn);
+    public BlockPosMixin_ReduceAllocations(int i, int j, int k) {
+        super(i, j, k);
     }
 
     /**
@@ -19,7 +18,7 @@ public abstract class BlockPosMixin_ReduceAllocations extends Vec3i {
      */
     @Overwrite
     public BlockPos up() {
-        return new BlockPos(this.getX(), this.getY() + 1, this.getZ());
+        return new BlockPos(x, y + 1, z);
     }
 
     /**
@@ -28,7 +27,7 @@ public abstract class BlockPosMixin_ReduceAllocations extends Vec3i {
      */
     @Overwrite
     public BlockPos up(int offset) {
-        return offset == 0 ? (BlockPos) (Object) this : new BlockPos(this.getX(), this.getY() + offset, this.getZ());
+        return offset == 0 ? (BlockPos) (Object) this : new BlockPos(x, y + offset, z);
     }
 
     /**
@@ -37,7 +36,7 @@ public abstract class BlockPosMixin_ReduceAllocations extends Vec3i {
      */
     @Overwrite
     public BlockPos down() {
-        return new BlockPos(this.getX(), this.getY() - 1, this.getZ());
+        return new BlockPos(x, y - 1, z);
     }
 
     /**
@@ -46,7 +45,7 @@ public abstract class BlockPosMixin_ReduceAllocations extends Vec3i {
      */
     @Overwrite
     public BlockPos down(int offset) {
-        return offset == 0 ? (BlockPos) (Object) this : new BlockPos(this.getX(), this.getY() - offset, this.getZ());
+        return offset == 0 ? (BlockPos) (Object) this : new BlockPos(x, y - offset, y);
     }
 
     /**
@@ -55,7 +54,7 @@ public abstract class BlockPosMixin_ReduceAllocations extends Vec3i {
      */
     @Overwrite
     public BlockPos north() {
-        return new BlockPos(this.getX(), this.getY(), this.getZ() - 1);
+        return new BlockPos(x, y, z - 1);
     }
 
     /**
@@ -64,7 +63,7 @@ public abstract class BlockPosMixin_ReduceAllocations extends Vec3i {
      */
     @Overwrite
     public BlockPos north(int offset) {
-        return offset == 0 ? (BlockPos) (Object) this : new BlockPos(this.getX(), this.getY(), this.getZ() - offset);
+        return offset == 0 ? (BlockPos) (Object) this : new BlockPos(x, y, z - offset);
     }
 
     /**
@@ -73,7 +72,7 @@ public abstract class BlockPosMixin_ReduceAllocations extends Vec3i {
      */
     @Overwrite
     public BlockPos south() {
-        return new BlockPos(this.getX(), this.getY(), this.getZ() + 1);
+        return new BlockPos(x, y, z + 1);
     }
 
     /**
@@ -82,7 +81,7 @@ public abstract class BlockPosMixin_ReduceAllocations extends Vec3i {
      */
     @Overwrite
     public BlockPos south(int offset) {
-        return offset == 0 ? (BlockPos) (Object) this : new BlockPos(this.getX(), this.getY(), this.getZ() + offset);
+        return offset == 0 ? (BlockPos) (Object) this : new BlockPos(x, y, z + offset);
     }
 
     /**
@@ -91,7 +90,7 @@ public abstract class BlockPosMixin_ReduceAllocations extends Vec3i {
      */
     @Overwrite
     public BlockPos west() {
-        return new BlockPos(this.getX() - 1, this.getY(), this.getZ());
+        return new BlockPos(x - 1, y, z);
     }
 
     /**
@@ -100,7 +99,7 @@ public abstract class BlockPosMixin_ReduceAllocations extends Vec3i {
      */
     @Overwrite
     public BlockPos west(int offset) {
-        return offset == 0 ? (BlockPos) (Object) this : new BlockPos(this.getX() - offset, this.getY(), this.getZ());
+        return offset == 0 ? (BlockPos) (Object) this : new BlockPos(x - offset, y, z);
     }
 
     /**
@@ -109,7 +108,7 @@ public abstract class BlockPosMixin_ReduceAllocations extends Vec3i {
      */
     @Overwrite
     public BlockPos east() {
-        return new BlockPos(this.getX() + 1, this.getY(), this.getZ());
+        return new BlockPos(x + 1, y, z);
     }
 
     /**
@@ -118,7 +117,7 @@ public abstract class BlockPosMixin_ReduceAllocations extends Vec3i {
      */
     @Overwrite
     public BlockPos east(int offset) {
-        return offset == 0 ? (BlockPos) (Object) this : new BlockPos(this.getX() + offset, this.getY(), this.getZ());
+        return offset == 0 ? (BlockPos) (Object) this : new BlockPos(x + offset, y, z);
     }
 
     /**
@@ -127,6 +126,6 @@ public abstract class BlockPosMixin_ReduceAllocations extends Vec3i {
      */
     @Overwrite
     public BlockPos offset(EnumFacing direction) {
-        return new BlockPos(this.getX() + direction.getFrontOffsetX(), this.getY() + direction.getFrontOffsetY(), this.getZ() + direction.getFrontOffsetZ());
+        return new BlockPos(x + direction.getFrontOffsetX(), y + direction.getFrontOffsetY(), z + direction.getFrontOffsetZ());
     }
 }
