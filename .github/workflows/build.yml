@@ -34,7 +34,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: PolyPatcher-1.8.9
-          path: versions/1.8.9-forge/build/libs
+          path: versions/1.8.9-forge/build/libs/PolyPatcher-1.8.9-forge-1.10.2.jar
           retention-days: 90
           compression-level: 9
       - run: ls versions/*/*/*
