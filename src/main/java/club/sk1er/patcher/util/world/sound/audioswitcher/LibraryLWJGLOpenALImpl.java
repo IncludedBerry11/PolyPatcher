@@ -9,4 +9,8 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public class LibraryLWJGLOpenALImpl {
+    public static void createAL() throws LWJGLException {
+      if (AL.isCreated()) AL.destroy();
+      AL.create();
+    }
 }
