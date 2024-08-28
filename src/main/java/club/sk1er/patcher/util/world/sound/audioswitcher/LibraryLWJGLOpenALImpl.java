@@ -9,14 +9,4 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 public class LibraryLWJGLOpenALImpl {
-    public static void createAL() throws LWJGLException {
-        try {
-            if (AL.isCreated()) AL.destroy();
-            AL.create();
-        } catch (Exception e) {
-            Patcher.instance.getLogger().error("Failed to create device, using system default.", e);
-            AL.destroy();
-            AL.create();
-        }
-    }
 }
