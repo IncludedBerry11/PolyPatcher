@@ -64,13 +64,6 @@ public class AudioSwitcher {
             if (this.changedDevice) {
                 Patcher.instance.forceSaveConfig();
 
-                try {
-                    this.mc.getSoundHandler().onResourceManagerReload(this.mc.getResourceManager());
-                } catch (Exception e) {
-                    Notifications.INSTANCE.send("Patcher", "Failed to reinitialize OpenAL.");
-                    Patcher.instance.getLogger().error("Failed to reinitialize OpenAL.", e);
-                }
-
                 this.changedDevice = false;
             }
         }
